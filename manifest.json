@@ -1,0 +1,17 @@
+{
+    "name": "JotForm Autosave Form Inputs",
+    "version": "1.0",
+    "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": ["https://form.jotform.com/*"],
+            "js": ["content.js"]
+        }
+    ],
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_title": "Jotform Autosave Form Inputs",
+        "default_icon": "icon.png"
+    },
+    "background": {"scripts": ["background.js"]}
+}
