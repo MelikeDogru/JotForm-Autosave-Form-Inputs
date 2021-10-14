@@ -4,14 +4,30 @@
     "manifest_version": 2,
     "content_scripts": [
         {
-            "matches": ["https://form.jotform.com/*"],
-            "js": ["content.js"]
+            "matches": [
+                "https://form.jotform.com/*"
+            ],
+            "js": [
+                "content.js"
+            ]
         }
     ],
     "browser_action": {
         "default_popup": "popup.html",
         "default_title": "Jotform Autosave Form Inputs",
-        "default_icon": "icon.png"
+        "default_icon": "favicon.png"
     },
-    "background": {"scripts": ["background.js"]}
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "permissions": [
+        "tabs",
+        "http://*/",
+        "https://*/",
+        "webRequest", 
+        "webRequestBlocking",
+        "storage"
+    ]
 }

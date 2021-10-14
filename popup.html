@@ -1,12 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>JotForm Autosave Form Inputs</title>
-    </head>
-    <body>
-        
-        <div id="info"></div>
-        <script src="popup.js" charset="utf-8"></script>
-    </body>
+
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>JotForm Autosave Form Inputs</title>
+    <script src="popup.js"></script>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+    <style>
+        .switch {
+            position: relative;
+            display: block;
+            vertical-align: top;
+            width: 60px;
+            height: 25px;
+            padding: 3px;
+            margin: 0 10px 10px 0;
+            background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+            background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+            border-radius: 18px;
+            box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            box-sizing: content-box;
+            margin-top: 18px;
+            margin-left: 5px;
+        }
+
+        .switch-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            box-sizing: content-box;
+        }
+
+        .switch-label {
+            position: relative;
+            display: block;
+            height: inherit;
+            font-size: 10px;
+            text-transform: uppercase;
+            background: #eceeef;
+            border-radius: inherit;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+            box-sizing: content-box;
+        }
+
+        .switch-label:before,
+        .switch-label:after {
+            position: absolute;
+            top: 50%;
+            margin-top: -.5em;
+            line-height: 1;
+            -webkit-transition: inherit;
+            -moz-transition: inherit;
+            -o-transition: inherit;
+            transition: inherit;
+            box-sizing: content-box;
+        }
+
+        .switch-label:before {
+            content: attr(data-off);
+            right: 11px;
+            color: #aaaaaa;
+            text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .switch-label:after {
+            content: attr(data-on);
+            left: 11px;
+            color: #FFFFFF;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+        }
+
+        .switch-input:checked~.switch-label {
+            background: #ec782a;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .switch-input:checked~.switch-label:before {
+            opacity: 0;
+        }
+
+        .switch-input:checked~.switch-label:after {
+            opacity: 1;
+        }
+
+        .switch-handle {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 23px;
+            height: 23px;
+            background: linear-gradient(to bottom, #FFFFFF 40%, #f0f0f0);
+            background-image: -webkit-linear-gradient(top, #FFFFFF 40%, #f0f0f0);
+            border-radius: 100%;
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .switch-handle:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -6px 0 0 -6px;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
+            background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
+            border-radius: 6px;
+            box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+        }
+
+        .switch-input:checked~.switch-handle {
+            left: 39px;
+            box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Transition
+========================== */
+        .switch-label,
+        .switch-handle {
+            transition: All 0.3s ease;
+            -webkit-transition: All 0.3s ease;
+            -moz-transition: All 0.3s ease;
+            -o-transition: All 0.3s ease;
+        }
+
+        h1 {
+            display: block;
+            font-size: 16px;
+            margin-top: 12px;
+            margin-bottom: 0;
+            margin-left: 0;
+            margin-right: 0;
+            text-align: left;
+            /*font-weight: bold;*/
+            font-family: sans-serif;
+        }
+
+        .color {
+            color: #ec782a;
+        }
+
+        p {
+            margin-top: 1px;
+            margin-bottom: 0;
+            margin-left: 0px;
+            margin-right: 0;
+            font-size: 14px;
+            text-align: left;
+            font-family: sans-serif;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto auto auto;
+        }
+
+        .grid-container>div {
+            background-color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        .item1 {
+            grid-row-start: 1;
+            grid-row-end: 2;
+            grid-column-start: 1;
+            grid-column-end: 2;
+        }
+
+        .item2 {
+            grid-row-start: 1;
+            grid-row-end: 2;
+            grid-column-start: 2;
+            grid-column-end: 4;
+        }
+
+        .item3 {
+            grid-row-start: 2;
+            grid-row-end: 3;
+            grid-column-start: 1;
+            grid-column-end: 4;
+        }
+
+        body {
+            min-width: 300px;
+            max-width: 100%;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        img {
+            margin-top: 5px;
+        }
+
+        .btn {
+            background-color: inherit;
+            width: 280px;
+            border: none;
+            color: black;
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: left;
+            font-family: sans-serif;
+        }
+
+        .btnOK {
+            background-color: inherit;
+            width: 70px;
+            height: 30px;
+            color: black;
+            /*padding: 12px 16px;*/
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-block;
+            font-family: sans-serif;
+            border-color:rgb(228, 142, 13);
+            text-align: center;
+        }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: #eee;
+        }
+
+        .btnOK:hover {
+            background-color: rgb(228, 142, 13);
+        }
+
+        i {
+            /*color: #ec782a;*/
+            margin-left: 4px;
+            margin-right: 43px;
+        }
+
+        /*alert*/
+        #dialogoverlay {
+            display: none;
+            opacity: .8;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            background: #FFF;
+            width: 100%;
+            z-index: 10;
+            
+        }
+
+        #dialogbox {
+            display: none;
+            position: fixed;
+            background: rgb(228, 142, 13);
+            border-radius: 5px;
+            width: 260px;
+            z-index: 10;
+            margin-top: 10px;
+            margin-left: 145px;
+        }
+
+        #dialogbox>div {
+            background: #FFF;
+            margin: 3px;
+        }
+
+        #dialogbox>div>#dialogboxhead {
+            background:#FFF;
+            font-size: 19px;
+            padding: 10px;
+            color: rgb(228, 142, 13);
+            font-weight: bold;
+            font-family: sans-serif;
+            
+        }
+
+        #dialogbox>div>#dialogboxbody {
+            background: #FFF;
+            padding: 10px;
+            font-family: sans-serif;
+            font-size: 12px;
+            /*color: rgb(228, 142, 13);*/
+        }
+
+        #dialogbox>div>#dialogboxfoot {
+            background: #FFF;
+            padding: 10px;
+            text-align: right;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="grid-container">
+            <div class="item1">
+                <label class="switch" id="label1">
+                    <input class="switch-input" type="checkbox" id="switch1" checked />
+                    <span class="switch-label" data-on="On" data-off="Off" id="span1"></span>
+                    <span class="switch-handle" id="span2"></span>
+                </label>
+            </div>
+            <div class="item2">
+                <h1>Autosaving is <span class="color">enabled</span> for</h1>
+                <p>form.jotform.com</p> 
+            </div>
+            <div class="item3">
+                <!-- <button class="btn"><i class="fa fa-trash font-awesome fa-7x"></i> Delete all autosaved inputs </button> -->
+                <button class="btn" id="deleteButton">
+                    <i class="fas fa-trash-alt fa-lg"></i>Delete all autosaved inputs
+                </button>
+            </div>
+            <div id="dialogoverlay"></div>
+            <div id="dialogbox">
+                <div>
+                    <div id="dialogboxhead"></div>
+                    <div id="dialogboxbody"></div>
+                    <div id="dialogboxfoot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
